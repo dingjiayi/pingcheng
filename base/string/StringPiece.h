@@ -62,7 +62,7 @@ public:
 
     #define STRINGPIECE_BINARY_PREDICATE(cmp, auxcmp)           \
         bool operator cmp (const StringPiece& x) const {         \
-            int r = memcmp(ptr_, x.ptr_, (length_ < x.length_) ? length_ : x.length; )  \
+            int r = memcmp(ptr_, x.ptr_, (length_ < x.length_) ? length_ : x.length );  \
             return ((r auxcmp 0) || ((r == 0) && (length_ cmp x.length_)));             \
         }                                                                               \
 
@@ -72,10 +72,52 @@ public:
         STRINGPIECE_BINARY_PREDICATE(>, >);
     
     #undef STRINGPIECE_BINARY_PREDICATE
+
+    int compare(const StringPiece& x) const {
+        int r = memcmp(ptr_, x.ptr_, length < x.length_ ? length_ : x.length_ );
+        if (r == 0)
+        {
+            if (length_ < x.length_) r = -1;
+            elseif (length_ > x.length_) r = 1;
+        }
+
+        return r;
+    }
+
+    std::string as_string() const {
+        retrun std::string(data(), length_);
+    }
+
+    void copyToString(std::string* target) const {
+        target->assign(ptr_, length_);
+    }
+
+    bool starts_with(const StringPiece& x) const {
+        return ((length_ >= x.length_) && (memcmp(ptr_, x.ptr_, x.length_) == 0));
+    }
 private:
     const char* ptr_;
     int length_;
 };
 } // namespace pingcheng
 
+//--------------------------------------------------------------------
+// Functions used to create STL containers that use StringPiece
+// Remember that a StringPiece's lifetime had better be less than
+// that of the underlying string or char*. If it is not, then you cannot
+// safely store a StringPiece into an STL container
+//--------------------------------------------------------------------
 
+#ifdef HAVE_TYPE_TRAITS
+// This makes vector<StringPiece> really fast for smoe STL implementations
+template<> struct _type_traits<pingcheng::StringPiece> {
+    typedef __true_type has_trivial_default_constructor;
+    typedef __true_type has_trivial_copy_constructor;
+    typedef __true_type has_trivial_assignment_operator;
+    typedef __true_type has_trivial_destructor;
+    typedef __true_type is_POS_type;
+}
+#endif
+
+// allow StringPiece to be logged 
+std::ostream& operator<<(std::ostream& o, const pingcheng::StringPiece& piece);
