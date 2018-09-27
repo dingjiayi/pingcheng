@@ -87,7 +87,60 @@ private:
 
     Impl impl_;
 
+}; // Logger
+
+extern Logger::LogLevel g_logLevel;
+
+inline Logger::LogLevel Logger::logLevel()
+{
+    return g_logLevel;
 }
 
+/* CAUTION: do not write:
+// if (good)
+// LOG_INFO << "Good news";
+// else
+// LOG_WARN << "Bad news";
+// 
+// this expends to 
+// 
+// if (good)
+//    if (logging_INFO)
+//         logInfoStream << "Good news";
+//    else 
+//          logWarnStream << "Bad news";
+
+*/
+
+#define LOG_TRACE if (pingcheng::Logger::logLevel() <= pingcheng::Logger::TRACE) \
+    pingcheng::Logger(__FILE__, __LINE__, pingcheng::Logger::TRACE, __func__).stream()
+#define LOG_DEBUG if (pingcheng::Logger::logLevel() <= pingcheng::Logger::DEBUG) \
+    pingcheng::Logger(__FILE__, __LINE__, pingcheng::Logger::DEBUG, __func__).stream()
+#define LOG_INFO if (pingcheng::Logger::logLevel() <= pingcheng::Logger::INFO) \
+    pingcheng::Logger(__FILE__, __LINE__, pingcheng::Logger::INFO, __func__).stream()
+#define LOG_WARN pingcheng::Logger(__FILE__, __LINE__, pingcheng::Logger::WARN, __func__).stream()
+#define LOG_ERROR pingcheng::Logger(__FILE__, __LINE__, pingcheng::Logger::ERROR).stream()
+#define LOG_FATAL pingcheng::Logger(__FILE__, __LINE__, pingcheng::Logger::FATAL, __func__).stream()
+#define LOG_SYSERR pingcheng::Logger(__FILE__, __LINE__, false).stream()
+#define LOG_SYSFATAL pingcheng::Logger(__FILE__, __LINE__, true).stream()
+
+const char* strerror_tl(int savedErrno);
+// Taken from glog/logging.h
+//
+// Check that the input is non NULL. This is very useful in constructor initializer lists.
+#define CHECK_NOTNULL(val) \
+    ::pingcheng::CheckNotNull(__FILE__, __LINE__, "'" #val "' Must be non NULL", (val))
+
+// A small helpter for CHECK_NOTNULL().
+template <typename T>
+T* CheckNotNull(Logger::SourceFile file, int line, const char* names, T* ptr)
+{
+    if (ptr == nullptr)
+    {
+        Logger(file, line, Logger::FATAL).stream() << names;
+    }
+
+    return ptr;
+}
 
 }
