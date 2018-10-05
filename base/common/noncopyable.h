@@ -1,5 +1,5 @@
-#ifndef PINGCHENG_BASE_COMMON_NONCOPYABLE_H
-#define PINGCHENG_BASE_COMMON_NONCOPYABLE_H
+#ifndef PC_BASE_COMMON_NONCOPYABLE_H
+#define PC_BASE_COMMON_NONCOPYABLE_H
 
 namespace pingcheng {
     namespace noncopyable_ {

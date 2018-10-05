@@ -2,7 +2,8 @@
 @taken from muduo : muduo/base/StringPiece.h
 */
 
-#pragma once
+#ifndef PC_BASE_STRING_STRING_PIECE_H
+#define PC_BASE_STRING_STRING_PIECE_H
 
 namespace pingcheng {
 // for passing c-style string argument to a function
@@ -121,3 +122,5 @@ template<> struct _type_traits<pingcheng::StringPiece> {
 
 // allow StringPiece to be logged 
 std::ostream& operator<<(std::ostream& o, const pingcheng::StringPiece& piece);
+
+#endif

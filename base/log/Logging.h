@@ -3,7 +3,9 @@
 Taken from muduo : muduo/base/Logging.h
 */
 
-#pragma once
+#ifndef PC_BASE_LOG_LOGGING_H
+#define PC_BASE_LOG_LOGGING_H
+
 namespace pingcheng 
 {
 class TimeZone;
@@ -144,3 +146,5 @@ T* CheckNotNull(Logger::SourceFile file, int line, const char* names, T* ptr)
 }
 
 }
+
+#endif

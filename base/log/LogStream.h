@@ -1,4 +1,7 @@
 
+#ifndef PC_BASE_LOG_LOGSTREAM_H
+#define PC_BASE_LOG_LOGSTREAM_H
+
 #include "base/string/StringPiece.h"
 #include "base/common/noncopyable.h"
 
@@ -165,3 +168,5 @@ inline LogStream& operator<<(LogStream& s, const Fmt& fm)
 }
 
 } // namespace pingcheng 
+
+#endif
