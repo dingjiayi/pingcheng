@@ -13,6 +13,8 @@ namespace pingcheng {
         }
     }
 
+    using noncopyable = noncopyable_::noncopyable;
+
 }
 
 #endif
