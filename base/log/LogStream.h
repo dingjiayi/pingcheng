@@ -73,6 +73,7 @@ private:
 
 class LogStream : pingcheng::noncopyable 
 {
+public:
     using self = LogStream;
     using Buffer = detail::FixedBuffer<detail::kSmallBuffer> ; 
 
@@ -136,8 +137,6 @@ class LogStream : pingcheng::noncopyable
     const Ubffer& buffer() const { return buffer_; }
     void resetBuffer() { buffer_.reset(); }
 
-public:
-
 private:
     void staticCheck();
 
@@ -169,4 +168,4 @@ inline LogStream& operator<<(LogStream& s, const Fmt& fm)
 
 } // namespace pingcheng 
 
-#endif
+#endif  //PC_BASE_LOG_LOGSTREAM_H

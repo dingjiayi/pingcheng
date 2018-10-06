@@ -6,6 +6,9 @@ Taken from muduo : muduo/base/Logging.h
 #ifndef PC_BASE_LOG_LOGGING_H
 #define PC_BASE_LOG_LOGGING_H
 
+#include "base/log/LogStream.h"
+#include "base/common/Timestamp.h"
+
 namespace pingcheng 
 {
 class TimeZone;
@@ -78,7 +81,7 @@ private:
         typedef Logger::LogLevel LogLevel;
         Impl(LogLevel level, int old_errno, const SourceFile& file, int line);
         void formatTime();
-        void finish()
+        void finish();
 
         Timestamp time_;
         LogStream stream_;
