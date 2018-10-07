@@ -1,3 +1,7 @@
+/*
+// This is a public header file, it must only include public header files.
+*/
+
 
 #ifndef PC_NET_INETADDRESS_H
 #define PC_NET_INETADDRESS_H
@@ -56,7 +60,7 @@ void setSockAddrInet6(const struct sockaddr_in6& addr6) { addr6_ = addr6; }
  // return true on sucess.
  // thread safe
  static bool resolve(StringArg hostname, InetAddress* result);
- 
+
 
 private:
     union
