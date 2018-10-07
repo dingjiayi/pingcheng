@@ -1,5 +1,6 @@
 
 #include "base/log/LogStream.h"
+#include "base/common/static_assert.h"
 #include <algorithm>
 #include <type_traits>
 
