@@ -67,7 +67,7 @@ private:
     char data_[SIZE];
     char* cur_;
 
-} // class FixedBuffer
+}; // class FixedBuffer
 
 } // namespace detail
 
@@ -146,7 +146,7 @@ private:
 
     static const int kMaxNumericSize = 32;
 
-}
+};
 
 class Fmt // noncopyable
 {
@@ -158,7 +158,7 @@ public:
 private:
     char buf_[32];
     int length_;
-}
+};
 
 inline LogStream& operator<<(LogStream& s, const Fmt& fm)
 {

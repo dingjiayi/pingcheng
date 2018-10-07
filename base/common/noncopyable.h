@@ -10,7 +10,7 @@ namespace pingcheng {
             ~noncopyable() = default;
             noncopyable(const noncopyable&) = delete;
             noncopyable& operator=(const noncopyable&) = delete;
-        }
+        };
     }
 
     using noncopyable = noncopyable_::noncopyable;

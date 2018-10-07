@@ -67,7 +67,7 @@ static const int kMicroSecondsPerSecond = 1000 * 1000;
 
 private:
     int64_t microSecondsSinceEpoch_;
-}
+};
 
 inline bool operator<(Timestamp lhs, Timestamp rhs)
 {
