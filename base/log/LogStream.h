@@ -118,7 +118,7 @@ public:
 
     self& operator<<(const unsigned char* str)
     {
-        return operatoro<<(reinterpret_cast<const char*>(str));
+        return operator<<(reinterpret_cast<const char*>(str));
     }
 
     self& operator<<(const std::string& v)
@@ -134,7 +134,7 @@ public:
     }
 
     void append(const char* data, int len) { buffer_.append(data, len); }
-    const Ubffer& buffer() const { return buffer_; }
+    const Buffer& buffer() const { return buffer_; }
     void resetBuffer() { buffer_.reset(); }
 
 private:
@@ -168,4 +168,4 @@ inline LogStream& operator<<(LogStream& s, const Fmt& fm)
 
 } // namespace pingcheng 
 
-#endif  //PC_BASE_LOG_LOGSTREAM_H
+#endif  //PC_BASELOG_LOGSTREAM_H

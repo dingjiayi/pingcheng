@@ -25,10 +25,10 @@ class StringPiece {
 public:
     // we provide non-explicit singleton constructors so users 
     // can pass in a "const char*" or a "string" wherever a "StringPiece" is expected
-    StringPiece() : ptr_(nullptr), length_(0) {}
+    StringPiece(): ptr_(nullptr), length_(0) {}
     StringPiece(const char* str) : ptr_(str), length_(static_cast<int>(strlen(ptr_))) {}
     StringPiece(const unsigned char* str) 
-    : ptr(reinterpret_cast<const char*>(str)), 
+    : ptr_(reinterpret_cast<const char*>(str)), 
       length_(static_cast<int>(strlen(ptr_))
     {}
 
