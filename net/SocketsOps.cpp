@@ -11,7 +11,7 @@ namespace
 using SA = struct sockaddr;
 
 #if VALGRIND || defined (NO_ACCEPT4)
-void setNonBlockAndCloseOnExc(int sockfd)
+void setNonBlockAndCloseOnExec(int sockfd)
 {
     // non-block
     int flags = ::fcntl(sockfd, F_GETFL, 0);
@@ -65,9 +65,84 @@ int sockets::createNonblockingOrDie(sa_family_t family)
     int sockfd = ::socket(family, SOCK_STREAM, IPPROTO_TCP);
     if (sockfd < 0)
     {
-        LOG_SYSFATAL << "sockets::createNonblockingOrDie" << sockfd;
+        LOG_SYSFATAL << "sockets::createNonblockingOrDie 1" << sockfd;
     }
-#else
 
+    setNonBlockAndCloseOnExec(sockfd);
+#else
+    int sockfd = socket(family, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, IPPROTO_TCP);
+    if (sockfd < 0)
+    {
+        LOG_SYSFATAL << "sockets::createNonblockingOrDie 2";
+    }
 #endif
+
+    return sockfd;
 }
+
+void sockets::bindOrDie(int sockfd, const struct sockaddr* addr)
+{
+    int ret = :: bind(sockfd, addr, static_cast<socklen_t>(sizeof(struct sockaddr_in6)));
+    if (ret < 0)
+    {
+        LOG_SYSFATAL << "sockets::bindOrDie 1";
+    }
+
+}
+
+void sockets::listenOrDie(int sockfd)
+{
+    int ret = ::listen(sockfd, SOMAXCONN);
+    if (ret < 0)
+    {
+        LOG_SYSFATAL << "sockets::listenOrDie";
+    }
+}
+
+int sockets::accept(int sockfd, struct sockaddr_in6* addr)
+{
+    socklen_t addrlen = static_cast<socklen_t>(sizeof *addr);
+#if VALGRIND || defined (NO_ACCEPT4)
+    int connfd = ::accept(sockfd, sockaddr_cast(addr), &addrlen);
+    setNonBlockAndCloseOnExec(connfd);
+#else
+    int connfd = ::accpet4(sockfd, sockaddr_cast(addr), &addrlen, SOCK_NONBLOCK | SOCK_CLOEXEC);
+#endif
+
+    if (connfd < 0)
+    {
+        int savedErrno = errno;
+        LOG_SYSERR << "Socket::accept";
+
+        switch (savedErrno)
+        {
+            case EAGAIN:
+            case ECONNABORTED:
+            case EINTR:
+            case EPROTO: 
+            case EPRERM:
+            case EMFILE:
+             // expected errors
+                errno = savedErrno;
+                break;
+            case EBADF:
+            case EFAULT:
+            case EINVAL:
+            case ENFILE:
+            case ENOBUFS:
+            case ENOMEM:
+            case ENOTSOCK:
+            case EOPNOTSUPP:
+                // unexpected errors
+                LOG_FATAL << "unexpected error of ::accept " << savedErrno;
+                break;
+            default:
+                LOG_FATAL << "unknow error of ::accept " << savedErrno;
+                break;
+        } // switch
+    } // if
+
+    return connfd;
+}
+
+
