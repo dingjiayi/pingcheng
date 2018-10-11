@@ -2,8 +2,12 @@
 @taken from muduo : muduo/base/StringPiece.h
 */
 
-#ifndef PC_BASE_STRING_STRING_PIECE_H
-#define PC_BASE_STRING_STRING_PIECE_H
+#ifndef PC_BASE_STRING_STRINGPIECE_H
+#define PC_BASE_STRING_STRINGPIECE_H
+
+#include <iosfwd>
+#include <cstring>
+#include <string>
 
 namespace pingcheng {
 // for passing c-style string argument to a function
@@ -29,10 +33,10 @@ public:
     StringPiece(const char* str) : ptr_(str), length_(static_cast<int>(strlen(ptr_))) {}
     StringPiece(const unsigned char* str) 
     : ptr_(reinterpret_cast<const char*>(str)), 
-      length_(static_cast<int>(strlen(ptr_))
+      length_(static_cast<int>(strlen(ptr_)))
     {}
 
-    StringPiece(const std::string& str): ptr(str.data()), length_(static_cast<int>(str.size())) {}
+    StringPiece(const std::string& str): ptr_(str.data()), length_(static_cast<int>(str.size())) {}
     StringPiece(const char* offset, int len): ptr_(offset), length_(len) {}
 
     const char* data() const {return ptr_; }
@@ -63,9 +67,9 @@ public:
 
     #define STRINGPIECE_BINARY_PREDICATE(cmp, auxcmp)           \
         bool operator cmp (const StringPiece& x) const {         \
-            int r = memcmp(ptr_, x.ptr_, (length_ < x.length_) ? length_ : x.length );  \
+            int r = memcmp(ptr_, x.ptr_, (length_ < x.length_) ? length_ : x.length_ );  \
             return ((r auxcmp 0) || ((r == 0) && (length_ cmp x.length_)));             \
-        }                                                                               \
+        }                                                                               
 
         STRINGPIECE_BINARY_PREDICATE(<, <);
         STRINGPIECE_BINARY_PREDICATE(<=, <);
@@ -75,18 +79,18 @@ public:
     #undef STRINGPIECE_BINARY_PREDICATE
 
     int compare(const StringPiece& x) const {
-        int r = memcmp(ptr_, x.ptr_, length < x.length_ ? length_ : x.length_ );
+        int r = memcmp(ptr_, x.ptr_, length_ < x.length_ ? length_ : x.length_ );
         if (r == 0)
         {
             if (length_ < x.length_) r = -1;
-            elseif (length_ > x.length_) r = 1;
+            else if (length_ > x.length_) r = 1;
         }
 
         return r;
     }
 
     std::string as_string() const {
-        retrun std::string(data(), length_);
+        return std::string(data(), length_);
     }
 
     void copyToString(std::string* target) const {
@@ -117,7 +121,7 @@ template<> struct _type_traits<pingcheng::StringPiece> {
     typedef __true_type has_trivial_assignment_operator;
     typedef __true_type has_trivial_destructor;
     typedef __true_type is_POS_type;
-}
+};
 #endif
 
 // allow StringPiece to be logged 
