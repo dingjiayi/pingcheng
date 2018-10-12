@@ -146,3 +146,97 @@ int sockets::accept(int sockfd, struct sockaddr_in6* addr)
 }
 
 
+int sockets::connect(int sockfd, const struct sockaddr* addr)
+{
+    return connect(sockfd, addr, static_cast<socklen_t>(sizeof(struct sockaddr_in6));)
+}
+
+ssize_t sockets::read(int sockfd, void *buf, size_t count)
+{
+    return ::read(sockfd, buf, count);
+}
+
+ssize_t sockets::readv(int sockfd, const struct iovec *iov, int iovcnt)
+{
+    return ::readv(sockfd, iov, iovcnt);
+}
+
+ssize_t sockets::write(int sockfd, const void *buf, size_t count)
+{
+    return ::write(sockfd, buf, count);
+}
+
+void sockets::close(int sockfd)
+{
+    ::close(sockfd);
+}
+
+void sockets::shutdownWrite(int sockfd)
+{
+    if (::shutdownWrite(sockfd, SHUT_WR) < 0)
+    {
+        LOG_SYSERR << "sockets::shutdownWrite";
+    }
+}
+
+void sockets::toIp(char* buf, size_t size, const sockaddr* addr)
+{
+    if (addr->sa_family == AF_INET)
+    {
+        assert(size >= INET_ADDRSTRLEN);
+        const struct sockaddr_in* addr4 = sockaddr_in_cast(addr);
+        ::inet_ntop(AF_INET, &addr4->sin_addr, buf, static_cast<socklen_t>(size));
+    }
+    else if (addr->sa_family == AF_INET6)
+    {
+        assert(size >= INET6_ADDRSTRLEN);
+        const struct sockaddr_in6* addr6 = sockaddr_in6_cast(addr);
+        ::inet_ntop(AF_INET6, &addr6->sin6_addr, buf, static_cast<socklen_t>(size));
+    }
+}
+
+void sockets::toIpPort(char* buf, size_t size, const struct sockaddr* addr)
+{
+    toIp(buf, size, addr);
+    size_t end = ::strlen(buf);
+    const struct sockaddr_in* addr4 = sockaddr_in_cast(addr);
+    uint16_t port = sockets::networkToHost16(addr4->sin_port);
+    assert(size > end);
+    snprintf(buf + end, size - end, ":%u", port);
+}
+
+
+void sockets::fromIpPort(const char* ip, uint16_t port, struct sockaddr_in* addr)
+{
+    addr->sin_family = AF_INET;
+    addr->sin_port = hostToNetwork16(port);
+    if (::inet_pton(AF_INET, ip, &addr->sin_addr) <= 0)
+    {
+        LOG_SYSERR << "sockets::fromIpPort ipv4";
+    }
+}
+
+void sockets::fromIpPort(const char* ip, uint16_t port, struct sockaddr_in6* addr)
+{
+    addr->sin6_family = AF_INET6;
+    addr->sin6_port = hostToNetwork16(port);
+    if (::inet_pton(AF_INET6, ip, &addr->sin6_addr) <= 0)
+    {
+        LOG_SYSERR << "sockets::fromIpPort ipv6";
+    }
+}
+
+int sockets::getSocketError(int sockfd)
+{
+    int optval;
+    socklent_t optlen = static_cast<socklen_t>(sizeof optval);
+
+    if (::getsockopt(sockfd, SOL_SOCKET, SO_ERROR, &optval, &optlen) < 0)
+    {
+        return errno;
+    }
+    else
+    {
+        return optval;
+    }
+}
