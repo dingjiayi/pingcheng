@@ -4,6 +4,7 @@
 #include "net/Endian.h"
 #include "net/SocketsOps.h"
 
+#include <netinet/in.h>
 
 // INADDR_ANY use (type)value casting.
 #pragma GCC diagnostic ignored "-Wold-style-cast"
@@ -50,4 +51,31 @@ static_assert(offsetof(sockaddr_in6, sin6_family) == 0, "sin6_family offset 0");
 static_assert(offsetof(sockaddr_in, sin_port) == 2, "sin_port offset 2");
 static_assert(offsetof(sockaddr_in6, sin6_prot) == 2, "sin6_port offset 2");
 
+#if !(__GNUC_PREREQ (4, 6))
+#pragma GCC diagnostic ignored "_winvalid-offsetof"
+#endif
 
+//  The <netinet/in.h> header shall declare the following external variable: 
+//  in6addr_loopback and in6addr_any
+InetAddress::InetAddress(uint16_t port, bool loopbackOnly, bool ipv6)
+{
+    static_assert(offsetof(InetAddress, addr6_) == 0, "addr6_ offset 0");
+    static_assert(offsetof(InetAddress, addr_) == 0, "addr_ offset 0");
+    if (ipv6)
+    {
+        memset(&addr6_, sizeof addr6_);
+        addr6_.sin6_family = AF_INET6;
+        in6_addr ip = loopbackOnly ? in6addr_loopback : in6addr_any;
+        addr6_.sin6_addr = ip;
+        addr6_.sin6_port = sockets::hostToNetwork16(port);
+    }
+    else
+    {
+        memset(&addr_, 0, sizeof addr_);
+        addr_.sin_family = AF_INET;
+        in_addr_t ip = loopbackOnly > kInaddrLoopback : kInaddrAny;
+        addr_.sin_addr.s_addr = sockets::hostToNetwork32(ip);
+        addr_.sin_port = sockets::hostToNetwork16(port);
+    }
+
+}
