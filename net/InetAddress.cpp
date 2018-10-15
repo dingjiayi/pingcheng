@@ -79,3 +79,87 @@ InetAddress::InetAddress(uint16_t port, bool loopbackOnly, bool ipv6)
     }
 
 }
+
+InetAddress::InetAddress(StringArg ip, uint16_t port, bool ipv6)
+{
+    if (ipv6)
+    {
+        memset(&addr6_, 0, sizeof addr6_);
+        sockets::fromIpPort(ip.c_str(), port, &addr6_);
+    }
+    else
+    {
+        memset(&addr, 0, sizeof addr6_);
+        sockets::fromIpPort(ip.c_str(), port, &addr_);
+    }
+}
+
+std::string InetAddress::toIpPort() const
+{
+    // netinet/in.h defines  INET_ADDRSTRLEN 16  and INET6_ADDRSTRLEN 46
+    // add port len = 5
+    // so len = 64 is enough
+
+    char buf[64] = "";
+    sockets::toIpPort(buf, sizeof buf, getSockAddr());
+    return buf;
+}
+
+std::string InetAddress::toIp() const
+{
+    char buf[64] = "";
+    sockets::toIp(buf, sizeof buf, getSockAddr);
+    return buf;
+}
+
+uint32_t InetAddress::ipNetEndian() const
+{
+    assert(family() == AF_INET);
+    return addr_.sin_addr.s_addr;
+}
+
+uint16_t InetAddress::toPort() const
+{
+    return sockets::networkToHost16(portNetEndian());
+}
+
+/// 
+///       The hostent structure is defined in <netdb.h> as follows:
+///
+///           struct hostent {
+///               char  *h_name;            /* official name of host */
+///               char **h_aliases;         /* alias list */
+///               int    h_addrtype;        /* host address type */
+///               int    h_length;          /* length of address */
+///               char **h_addr_list;       /* list of addresses */
+///           }
+///       #define h_addr h_addr_list[0] /* for backward compatibility */
+
+
+static __pthread char t_resolveBuffer[64 * 1024];
+bool InetAddress::resolve(StringArg hostname, InetAddress* out)
+{
+    assert(out != nullptr);
+    struct hostent hent;
+    struct hostent* he = NULL;
+    int herrno = 0;
+
+    memset(&hent, 0, sizeof hent);
+
+    int ret = gethostbyname_r(hostname.c_str(), &hent, t_resolveBuffer, sizeof t_resolveBuffer, &he, &herrno);
+    if (ret == 0 && &he!= nullptr)
+    {
+        assert(he->h_addrtype == AF_INET && he->h_length == sizeof(uint32_t));
+        out->addr_.sin_addr = *reinterpret_cast<struct in_addr*>(he->h_addr);
+        return true;
+    }
+    else
+    {
+        if (ret)
+        {
+            LOG_SYSERR << "InetAddress:resolve";
+        }    
+
+        return false;
+    }
+}
