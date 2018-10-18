@@ -4,6 +4,7 @@
 #ifndef PC_NET_EVENTLOOP_H
 #define PC_NET_EVENTLOOP_H
 
+#include <boost/any.hpp>
 #include <vector>
 
 namespace pingcheng
@@ -46,8 +47,15 @@ private:
     // unlike in TimerQueue, Which is an internal class,
     // we don't expose Channel to client.
     std::unique_ptr<Channel> wakeupChannel_;
-    
-}
+    boost::any context_;
+
+    // scratch variables
+    ChannelList activeChannels_;
+    Channel* currentActiveChannel_;
+
+    mutable MutexLock mutex_;
+    std::vector<Functor> pendingFunctors_; // @GrardedBy mutex_
+};
 
 }
 }
