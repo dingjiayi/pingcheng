@@ -62,7 +62,25 @@ public:
     bool isNoneEvent() const { return events_ == kNoneEvent; }
 
     void enableReading() { events_ |= kReadEvent; update(); }
-    
+    void disableReading() { events_ &= ~kReadEvent; update();}
+    void enableWriting() { events_ |= kWritenEvent; update(); }
+    void disableWriting() { events_ &= ~kWriteEvent; update(); }
+    void disableAll() { events_ = kNoneEvent; update(); }
+    bool isWriting() const { return events_ & kWriteEvent; }
+    bool isReading() const { return events_ & kReadEvent; }
+
+    // for Poller
+    int index() { return index_; } // why no const
+    void set_index(int idx) { index_ = idx; }
+
+    // for debug
+    std::string reventsToString() const;
+    std::string eventsToString() const;
+
+    void doNotLogHup() { logHup_ = false; }
+    EventLoop* ownerLoop() { return loop_; }
+    void remove();
+
 private:
     static std::string eventsToString(int fd, int ev);
     void update();
