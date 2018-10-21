@@ -3,6 +3,8 @@
 #ifndef PC_NET_ACCEPTOR_H
 #define PC_NET_ACCEPTOR_H
 
+#include "net/Channel.h"
+#include "net/Socket.h"
 #include <functional>
 
 namespace pingcheng 
