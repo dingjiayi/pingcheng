@@ -64,6 +64,7 @@ void Acceptor::handleRead()
         //Read the section named "THe special problem of accept()ing 
         // When you can't " in libev's doc."
         // By Marc Lehmann, author of libev.
+        // https://metacpan.org/pod/release/TYPESTER/UV-0.12/deps/libuv/src/unix/ev/ev.pod
         if (errno == EMFILE)
         {
             ::close(idleFd_);
