@@ -8,6 +8,7 @@
 #include "net/Endian.h"
 
 #include <vector>
+#include <algorithm>
 
 namespace pingcheng 
 {
@@ -92,6 +93,94 @@ public:
         const void* eol = memchar(peek(), '\n', readableBytes());
         return static_cast<const char*>(eol);
     }
+
+    const char* findEOL(const char* start ) const 
+    {
+        assert(peek() <= start);
+        assert(start <= beginWrite());
+        const void* eol = memchar(start, '\n', beginWrite() - start);
+        return static_cast<const char*>(eol);
+    }
+
+    // retrieve returns void, to prevent
+    // string str(retrieve(readableBytes()), readableBytes());
+    // the evaluation of two functions ars unspecified
+    void retrieve(size_t len)
+    {
+        assert(len <= readableBytes());
+        if (len < readableBytes())
+        {
+            readerIndex_ += len;
+        }
+        else
+        {
+            retrieveAll();
+        }
+    }
+
+    void retrieveUntil(const char* end)
+    {
+        assert(peek() <= end);
+        assert(end <= beginWrite());
+        retrieve(end - peek());
+    }
+
+    void retrieveInt64()
+    {
+        retrieve(sizeof(int64_t));
+    }
+
+    void retrieveInt32()
+    {
+        retrieve(sizeof(int32_t));
+    }
+
+    void retrieveInt16()
+    {
+        retrieve(sizeof(int16_t));
+    }
+    void retrieveInt8()
+    {
+        retrieve(sizeof(int8_t));
+    }
+
+    void retrieveAll()
+    {
+        readerIndex_ = kCheapPrepend;
+        writerIndex_ = kCheapPrepend;
+    }
+
+    std::string retrieveAllAsString()
+    {
+        return retrieveAsString(readableBytes());
+    }
+
+    std::string retrieveAsString(size_t len)
+    {
+        assert(len <= readableBytes());
+        std::string result(peek(), len);
+        retrieve(len);
+        return result;
+    }
+
+    StringPiece toStringPiece() const 
+    {
+        return StringPiece(peek(), static_cast<int>(readableBytes()));
+    }
+
+    void append(const StringPiece& str)
+    {
+        append(str.data(), str.size());
+    }
+
+    void append(const char* /*restrict*/ data, size_t len)
+    {
+        ensureWritableBytes(len);
+        std::copy(data, data + len, beginWrite());
+        hasWritten(len);
+    }
+
+    v
 private:
     std::vector<char> buffer_;
     size_t readerIndex_;
