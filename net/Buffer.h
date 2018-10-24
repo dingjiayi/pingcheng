@@ -180,7 +180,10 @@ public:
         hasWritten(len);
     }
 
-    v
+    void append(const void* /*restrict*/ data, size_t len)
+    {
+        
+    }
 private:
     std::vector<char> buffer_;
     size_t readerIndex_;
