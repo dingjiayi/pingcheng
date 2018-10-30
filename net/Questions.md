@@ -16,6 +16,9 @@ const size_t Buffer::kInitialSize;
 ```
 会如何。
 
+### 4. Atomic.h
+4.1 为何 addAndGet 不用 __atomic_add_fetch
+
 
 
 
@@ -26,6 +29,6 @@ const size_t Buffer::kInitialSize;
    http://wiki.jikexueyuan.com/project/cplusplus-concurrency-action/  第五章
    https://www.ibm.com/developerworks/cn/linux/l-gcc-hacks/index.html
    http://blog.jobbole.com/106516/
- 
+   https://www.jianshu.com/p/da1d69f0a6ad
     内存栅栏：
 
