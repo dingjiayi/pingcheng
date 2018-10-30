@@ -7,3 +7,25 @@
 
 ### 2. InetAddress
 2.1 ipNetEndian()函数为何直接是AF_INET
+
+### 3. Buffer.cpp
+3.1 如果.cpp中不包含 
+```
+const size_t Buffer::kCheapPrepend;
+const size_t Buffer::kInitialSize;
+```
+会如何。
+
+
+
+
+---------------------------------------------------------
+# 20181030 本周周末总结内容
+1. C++ 11 内存模型
+   参考地址：http://www.parallellabs.com/2011/08/27/c-plus-plus-memory-model/
+   http://wiki.jikexueyuan.com/project/cplusplus-concurrency-action/  第五章
+   https://www.ibm.com/developerworks/cn/linux/l-gcc-hacks/index.html
+   http://blog.jobbole.com/106516/
+ 
+    内存栅栏：
+
