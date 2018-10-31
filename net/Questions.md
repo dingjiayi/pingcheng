@@ -32,3 +32,12 @@ const size_t Buffer::kInitialSize;
    https://www.jianshu.com/p/da1d69f0a6ad
     内存栅栏：
 
+2. __BEGIN_DECLS  ... __END_DECLS
+    https://www.zhihu.com/question/27032678
+
+3. __attribute__
+   
+   GNU C __attribute__ 机制简介
+   http://blog.51cto.com/afreez/7351
+   http://www.keil.com/support/man/docs/armcc/armcc_chr1359124976881.htm
+   
