@@ -41,3 +41,9 @@ const size_t Buffer::kInitialSize;
    http://blog.51cto.com/afreez/7351
    http://www.keil.com/support/man/docs/armcc/armcc_chr1359124976881.htm
    
+
+4. MIT 分布式系统 
+   https://pdos.csail.mit.edu/6.824/
+   https://www.zhihu.com/question/24750289
+   https://yq.aliyun.com/articles/8069
+   
