@@ -46,4 +46,13 @@ const size_t Buffer::kInitialSize;
    https://pdos.csail.mit.edu/6.824/
    https://www.zhihu.com/question/24750289
    https://yq.aliyun.com/articles/8069
+
+--------------------------------------------------------------------
+1. 指针和引用
+   1.1. sizeof 相等
+   1.2. 取地址相等
+   1.3. 指针和引用的区别
+   1.4. 参数传递 引用比指针好
+   1.5. 常见用途： 参数类型和返回类型
+   1.6. 函数后面的const 是函数前面的一部分
    
