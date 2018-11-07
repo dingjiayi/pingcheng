@@ -76,4 +76,4 @@ const size_t Buffer::kInitialSize;
 
    --------------------------------------- 动态绑定 Dynamic Binding  -------------------------------------------
    1. 通过对象来调用，静态绑定 static binding
-   2. 
+   2. https://blog.csdn.net/Richie_ll/article/details/80375549
