@@ -77,3 +77,14 @@ const size_t Buffer::kInitialSize;
    --------------------------------------- 动态绑定 Dynamic Binding  -------------------------------------------
    1. 通过对象来调用，静态绑定 static binding
    2. https://blog.csdn.net/Richie_ll/article/details/80375549
+
+
+    ------------------------------------ 陈硕 TCP连接 ------------------------------------
+    1. https://zhuanlan.zhihu.com/p/25241630
+    2. https://blog.csdn.net/solstice/article/details/6579232
+
+    ---------------------------------------- 编译连接问题 ----------------------------------------
+    Linux 动态库与静态库制作及使用详解  https://www.ibm.com/developerworks/cn/linux/l-cn-linklib/index.html
+
+    ---------------------------------------- skynet ----------------------------------------
+    https://blog.csdn.net/vonzhoufz/article/details/38877337
